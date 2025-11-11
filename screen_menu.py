@@ -28,13 +28,11 @@ def open_file(index):
         exit()
     
     try:
-        with open(python_file, encoding='utf-8') as f:
-            exec(f.read())
+        with open(python_file, encoding='utf-8') as f: exec(f.read())
     
     except FileNotFoundError:
         input("\ncoming soon..\nwala pang file na " + python_file)
-        with open("screen_menu.py", encoding='utf-8') as f:
-            exec(f.read())
+        with open("screen_menu.py", encoding='utf-8') as f: exec(f.read())
 
 
 # =====

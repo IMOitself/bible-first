@@ -3,5 +3,4 @@ print("\nBASTA WELCOME\n")
 print("Press any key to continue...")
 input()
 
-with open('screen_menu.py', encoding='utf-8') as f:
-    exec(f.read())
+with open('screen_menu.py', encoding='utf-8') as f: exec(f.read())
