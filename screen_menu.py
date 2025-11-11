@@ -2,16 +2,16 @@ try:
     from readchar import readkey, key
 except ImportError:
     import os
-    print("Installing readchar...")
+    print("\nwait lang pu...")
     os.system("pip install readchar")
     from readchar import readkey, key
 
 options = [
-    "start reading",   # 0
-    "find in bible",   # 1
-    "verse of the day",# 2
-    "back to menu",    # 3
-    "exit"             # 4
+    "📖 START READING",   # 0
+    "🔖 BOOKMARKS",       # 1
+    "🔎 SEARCH IN BIBLE", # 2
+    "🔙 BACK",            # 3
+    "❌ QUIT"             # 4
 ]
 
 def open_file(index):
@@ -19,21 +19,21 @@ def open_file(index):
     if index == 0:
         python_file = "screen_read_bible.py"
     elif index == 1:
-        python_file = "screen_find_bible.py"
+        python_file = "screen_bookmarks.py"
     elif index == 2:
-        python_file = "screen_verse_of_the_day.py"
+        python_file = "screen_find_in_bible.py"
     elif index == 3:
         python_file = "screen_intro.py"
     elif index == 4:
         exit()
     
     try:
-        with open(python_file) as f:
+        with open(python_file, encoding='utf-8') as f:
             exec(f.read())
+    
     except FileNotFoundError:
         input("\ncoming soon..\nwala pang file na " + python_file)
-        # RESTART
-        with open("screen_menu.py") as f:
+        with open("screen_menu.py", encoding='utf-8') as f:
             exec(f.read())
 
 
@@ -43,8 +43,9 @@ def open_file(index):
 
 selected_option = 0
 while True:
-    print("\033[2J\033[H")  # Clear screen
+    print("\033[H\033[2J")  # Clear screen
     print("\nBASTA TITLE NATIN\n")
+    print("[ verse of the day dito ]\n")
     
     i = 0
     for option in options:
@@ -54,6 +55,7 @@ while True:
             print(f"  {option}")
 
         i += 1
+    
     
     pressed_key = readkey()
     press_down = pressed_key == key.DOWN or pressed_key == 's'
