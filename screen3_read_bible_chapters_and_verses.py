@@ -3,6 +3,8 @@ import sys
 from readchar import readkey, key
 import UI
 
+import screen3_read_bible_verse
+
 try:
     from bible_data import KJV_BIBLE
 except ImportError:
@@ -148,7 +150,7 @@ def start(book_index):
                 selected_verse_idx = 0
             else:
                 # Verse selected
-                pass
+                screen3_read_bible_verse.start(book_index, selected_chapter_idx, selected_verse_idx)
 
 if __name__ == "__main__":
     # Test with Genesis (Index 0)
