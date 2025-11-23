@@ -16,8 +16,8 @@ options = [
 
 def open_screen(index):
     if index == 0:
-        import screen3_read_bible
-        screen3_read_bible.start()
+        import screen3_read_bible_books
+        screen3_read_bible_books.start()
     elif index == 1:
         import screen4_bookmarks
         screen4_bookmarks.start()

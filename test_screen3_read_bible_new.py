@@ -2,6 +2,7 @@ from typing import List, Tuple, Optional
 import shutil
 import textwrap
 from readchar import readkey, key
+import UI
 
 try:
     from bible_data import KJV_BIBLE
@@ -25,48 +26,53 @@ def get_book_chapter(book_idx: int, chap_idx: int):
     except Exception:
         return "UNKNOWN", str(chap_idx + 1), []
 
-def render_verses_to_lines(verses: List[dict], width: int) -> Tuple[List[str], List[int]]:
-    lines: List[str] = []
-    verse_starts: List[int] = []
-    for v in verses:
-        verse_no = str(v.get("verse", ""))
-        text = v.get("text", "")
-        verse_starts.append(len(lines))
-        if not text:
-            lines.append(f"{verse_no}")
-            continue
-        available = max(10, width - (len(verse_no) + 1))
-        wrapped = textwrap.wrap(text, width=available) or [""]
-        lines.append(f"{verse_no} {wrapped[0]}")
-        indent = " " * (len(verse_no) + 1)
-        for cont in wrapped[1:]:
-            lines.append(f"{indent}{cont}")
-    return lines, verse_starts
-
-def get_chapter_content(book_idx: int, chap_idx: int) -> Tuple[List[str], List[int], str]:
+def get_verse_content(book_idx: int, chap_idx: int, verse_idx: int) -> Tuple[List[str], str]:
     cols, _ = shutil.get_terminal_size(fallback=(80, 24))
+    content_width = cols - 4
+    
     book_name, chapter_number, verses = get_book_chapter(book_idx, chap_idx)
-    header = f"{book_name} {chapter_number}".upper()
-    lines, verse_starts = render_verses_to_lines(verses, cols)
-    return lines, verse_starts, header
+    
+    if 0 <= verse_idx < len(verses):
+        v = verses[verse_idx]
+        verse_num = v.get("verse", str(verse_idx + 1))
+        text = v.get("text", "")
+        
+        header = f"{book_name} {chapter_number}:{verse_num}"
+        
+        # Wrap text
+        lines = textwrap.wrap(text, width=content_width) or [""]
+    else:
+        header = f"{book_name} {chapter_number}:?"
+        lines = ["Verse not found."]
+        
+    return lines, header
 
 def display_viewport(lines: List[str], header: str, offset: int) -> int:
     _, rows = shutil.get_terminal_size(fallback=(80, 24))
-    reserved = 3 # Header, blank, footer
-    content_height = max(1, rows - reserved)
+    
+    reserved_outside = 1 # Footer
+    box_borders = 2 # Top and Bottom
+    fixed_header_lines = 3 # Header, KJV, Blank
+    
+    total_reserved = reserved_outside + box_borders + fixed_header_lines
+    verse_lines_available = max(1, rows - total_reserved)
     
     clear_screen()
-    print(header)
-    print()
     
-    visible = lines[offset: offset + content_height]
-    for ln in visible:
-        print(ln)
-    for _ in range(content_height - len(visible)):
-        print()
+    visible_lines = lines[offset: offset + verse_lines_available]
+    
+    # Construct the content for the box
+    box_content_lines = [
+        header,
+        "King James Version",
+        ""
+    ] + visible_lines
+    
+    full_text = "\n".join(box_content_lines)
+    UI.print_box(full_text)
         
-    print("\n< PREV | NEXT > | [S]earch | [M]enu")
-    return content_height
+    print("< PREV | NEXT > | [S]earch | [M]enu")
+    return verse_lines_available
 
 def menu_select(items: List[str], title: str) -> int:
     if not items: return -1
@@ -78,12 +84,10 @@ def menu_select(items: List[str], title: str) -> int:
         available_height = max(1, rows - reserved_lines)
         
         total = len(items)
-        # Calculate columns needed to fit all items within available height
         items_per_col = available_height
         num_cols = (total + items_per_col - 1) // items_per_col
         
-        # Calculate column width
-        max_w = max((len(it) for it in items), default=0) + 4 # [x] + padding
+        max_w = max((len(it) for it in items), default=0) + 4
         
         clear_screen()
         print(title + "\n")
@@ -95,14 +99,9 @@ def menu_select(items: List[str], title: str) -> int:
                 if i < total:
                     name = items[i]
                     disp = f"[{name}]" if i == idx else f" {name} "
-                    # Pad to column width
                     row_parts.append(disp.ljust(max_w))
             print("".join(row_parts))
             
-        # Fill remaining lines if any (though we calculated to fit)
-        # But if total items < available_height, we might have empty lines at bottom
-        # which is fine.
-        
         print("\n[ENTER] Confirm | [ESC] Back | [Q] Quit Menu")
         
         k = readkey()
@@ -111,14 +110,8 @@ def menu_select(items: List[str], title: str) -> int:
         elif k == key.DOWN:
             idx = (idx + 1) % total
         elif k == key.LEFT:
-            # Jump to previous column (same row)
-            # If we are at the start, wrap to end? Or stop?
-            # Let's wrap around for fluid navigation
             new_idx = idx - items_per_col
             if new_idx < 0:
-                # Wrap to end, trying to keep relative row
-                # This is a bit complex to get perfectly right with uneven columns
-                # Simple approach: just subtract
                 idx = max(0, idx - items_per_col)
             else:
                 idx = new_idx
@@ -167,26 +160,43 @@ def search_menu() -> Optional[Tuple[int, int, int]]:
         
     return b_idx, c_idx, v_idx
 
-def get_nav_target(book_idx: int, chap_idx: int, direction: int) -> Tuple[int, int]:
+def get_nav_target_verse(book_idx: int, chap_idx: int, verse_idx: int, direction: int) -> Tuple[int, int, int]:
     # direction: -1 for prev, 1 for next
     books_len = len(KJV_BIBLE)
-    if books_len == 0: return 0, 0
+    if books_len == 0: return 0, 0, 0
     
-    chapters_len = len(KJV_BIBLE[book_idx].get("chapters", []))
+    chapters = KJV_BIBLE[book_idx].get("chapters", [])
+    verses = chapters[chap_idx].get("verses", [])
+    verses_len = len(verses)
     
-    new_chap = chap_idx + direction
+    new_verse = verse_idx + direction
     
-    if 0 <= new_chap < chapters_len:
-        return book_idx, new_chap
+    if 0 <= new_verse < verses_len:
+        return book_idx, chap_idx, new_verse
     
-    # Move to adjacent book
-    new_book = (book_idx + direction) % books_len
+    # Move to adjacent chapter
     if direction > 0:
-        return new_book, 0
+        # Next chapter
+        new_chap = chap_idx + 1
+        if new_chap < len(chapters):
+            return book_idx, new_chap, 0
+        else:
+            # Next book
+            new_book = (book_idx + 1) % books_len
+            return new_book, 0, 0
     else:
-        # Last chapter of previous book
-        prev_chaps = len(KJV_BIBLE[new_book].get("chapters", []))
-        return new_book, max(0, prev_chaps - 1)
+        # Prev chapter
+        new_chap = chap_idx - 1
+        if new_chap >= 0:
+            prev_verses_len = len(chapters[new_chap].get("verses", []))
+            return book_idx, new_chap, max(0, prev_verses_len - 1)
+        else:
+            # Prev book
+            new_book = (book_idx - 1) % books_len
+            prev_book_chapters = KJV_BIBLE[new_book].get("chapters", [])
+            last_chap_idx = max(0, len(prev_book_chapters) - 1)
+            last_chap_verses_len = len(prev_book_chapters[last_chap_idx].get("verses", [])) if prev_book_chapters else 0
+            return new_book, last_chap_idx, max(0, last_chap_verses_len - 1)
 
 def start():
     # Initial Search
@@ -194,8 +204,8 @@ def start():
     if not res: return
     
     cur_book, cur_chap, cur_verse = res
-    lines, verse_starts, header = get_chapter_content(cur_book, cur_chap)
-    offset = verse_starts[cur_verse] if cur_verse < len(verse_starts) else 0
+    lines, header = get_verse_content(cur_book, cur_chap, cur_verse)
+    offset = 0
     
     while True:
         content_height = display_viewport(lines, header, offset)
@@ -210,17 +220,18 @@ def start():
             res = search_menu()
             if res:
                 cur_book, cur_chap, cur_verse = res
-                lines, verse_starts, header = get_chapter_content(cur_book, cur_chap)
-                offset = verse_starts[cur_verse] if cur_verse < len(verse_starts) else 0
+                lines, header = get_verse_content(cur_book, cur_chap, cur_verse)
+                offset = 0
         elif k == key.LEFT:
-            cur_book, cur_chap = get_nav_target(cur_book, cur_chap, -1)
-            lines, verse_starts, header = get_chapter_content(cur_book, cur_chap)
+            cur_book, cur_chap, cur_verse = get_nav_target_verse(cur_book, cur_chap, cur_verse, -1)
+            lines, header = get_verse_content(cur_book, cur_chap, cur_verse)
             offset = 0
         elif k == key.RIGHT:
-            cur_book, cur_chap = get_nav_target(cur_book, cur_chap, 1)
-            lines, verse_starts, header = get_chapter_content(cur_book, cur_chap)
+            cur_book, cur_chap, cur_verse = get_nav_target_verse(cur_book, cur_chap, cur_verse, 1)
+            lines, header = get_verse_content(cur_book, cur_chap, cur_verse)
             offset = 0
         elif k == key.ESC or k in ("m", "M"):
             break
 
-
+if __name__ == "__main__":
+    start()
