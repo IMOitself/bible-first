@@ -1,152 +1,81 @@
 import os
-import sys
 import UI
-
 from bible_data import KJV_BIBLE
 from readchar import readkey, key
 import screen3_read_bible_verse
 
+def print_grid(num_items, selected_idx):
+    rows = (num_items + 9) // 10
+    for r in range(rows):
+        line_parts = []
+        for c in range(10):
+            idx = r * 10 + c
+            if idx < num_items:
+                item_str = f"{idx + 1:02}"
+                if idx == selected_idx:
+                    item_str = f"\033[91m{item_str}\033[0m"
+                line_parts.append(item_str)
+            else:
+                line_parts.append("  ")
+        print("  ".join(line_parts))
+
+def handle_navigation(k, current_idx, total_items):
+    if k == key.UP:
+        if current_idx >= 10:
+            return current_idx - 10
+    elif k == key.DOWN:
+        if current_idx + 10 < total_items:
+            return current_idx + 10
+        elif current_idx + 10 >= total_items and current_idx // 10 < (total_items - 1) // 10:
+            return min(total_items - 1, current_idx + 10)
+    elif k == key.LEFT:
+        if current_idx > 0:
+            return current_idx - 1
+    elif k == key.RIGHT:
+        if current_idx < total_items - 1:
+            return current_idx + 1
+    return current_idx
+
 def start(book_index):
-    if book_index < 0 or book_index >= len(KJV_BIBLE):
-        return
+    if not (0 <= book_index < len(KJV_BIBLE)): return
 
     book_data = KJV_BIBLE[book_index]
     book_name = book_data["book"]
     chapters = book_data["chapters"]
-    num_chapters = len(chapters)
     
-    selected_chapter_idx = 0
-    selected_verse_idx = 0
-    
-    # Mode: 0 = Chapter Selection, 1 = Verse Selection
-    mode = 0
-    
+    selected_chapter = 0
+    selected_verse = 0
+    mode = 0 # 0: Chapter, 1: Verse
+
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         
-        # Header
         if mode == 0:
             UI.print_box(f"{book_name} _:_")
             print("Chapter:")
-            
-            # Grid Rendering for Chapters
-            rows = (num_chapters + 9) // 10
-            
-            for r in range(rows):
-                line_parts = []
-                for c in range(10):
-                    idx = r * 10 + c
-                    if idx < num_chapters:
-                        chapter_num = idx + 1
-                        chapter_str = f"{chapter_num:02}"
-                        
-                        if idx == selected_chapter_idx:
-                            chapter_str = f"\033[91m{chapter_str}\033[0m"
-                        
-                        line_parts.append(chapter_str)
-                    else:
-                        line_parts.append("  ")
-                
-                print("  ".join(line_parts))
-                
-        elif mode == 1:
-            # Verse Selection Mode
-            current_chapter_num = selected_chapter_idx + 1
-            UI.print_box(f"{book_name} {current_chapter_num}:_")
+            print_grid(len(chapters), selected_chapter)
+        else:
+            UI.print_box(f"{book_name} {selected_chapter + 1}:_")
             print("Verse:")
-            
-            # Get verses for selected chapter
-            # chapters is a list of dicts: {"chapter": "1", "verses": [...]}
-            chapter_data = chapters[selected_chapter_idx]
-            verses = chapter_data["verses"]
-            num_verses = len(verses)
-            
-            # Grid Rendering for Verses
-            rows = (num_verses + 9) // 10
-            
-            for r in range(rows):
-                line_parts = []
-                for c in range(10):
-                    idx = r * 10 + c
-                    if idx < num_verses:
-                        verse_num = idx + 1
-                        verse_str = f"{verse_num:02}"
-                        
-                        if idx == selected_verse_idx:
-                            verse_str = f"\033[91m{verse_str}\033[0m"
-                        
-                        line_parts.append(verse_str)
-                    else:
-                        line_parts.append("  ")
-                
-                print("  ".join(line_parts))
+            print_grid(len(chapters[selected_chapter]["verses"]), selected_verse)
             
         print("\n[Q] Back")
-        
         k = readkey()
-        if k.lower() == 'q':
-            if mode == 1:
-                mode = 0
-            else:
-                break
         
-        # Navigation
-        if k == key.UP:
-            if mode == 0:
-                if selected_chapter_idx >= 10:
-                    selected_chapter_idx -= 10
-            else:
-                if selected_verse_idx >= 10:
-                    selected_verse_idx -= 10
-                    
-        elif k == key.DOWN:
-            if mode == 0:
-                if selected_chapter_idx + 10 < num_chapters:
-                    selected_chapter_idx += 10
-                elif selected_chapter_idx + 10 >= num_chapters and selected_chapter_idx // 10 < (num_chapters - 1) // 10:
-                     selected_chapter_idx = min(num_chapters - 1, selected_chapter_idx + 10)
-            else:
-                # Verse mode down
-                # Need to check num_verses
-                # Re-fetch num_verses
-                chapter_data = chapters[selected_chapter_idx]
-                verses = chapter_data["verses"]
-                num_verses = len(verses)
-                
-                if selected_verse_idx + 10 < num_verses:
-                    selected_verse_idx += 10
-                elif selected_verse_idx + 10 >= num_verses and selected_verse_idx // 10 < (num_verses - 1) // 10:
-                     selected_verse_idx = min(num_verses - 1, selected_verse_idx + 10)
-                 
-        elif k == key.LEFT:
-            if mode == 0:
-                if selected_chapter_idx > 0:
-                    selected_chapter_idx -= 1
-            else:
-                if selected_verse_idx > 0:
-                    selected_verse_idx -= 1
-                    
-        elif k == key.RIGHT:
-            if mode == 0:
-                if selected_chapter_idx < num_chapters - 1:
-                    selected_chapter_idx += 1
-            else:
-                # Re-fetch num_verses
-                chapter_data = chapters[selected_chapter_idx]
-                verses = chapter_data["verses"]
-                num_verses = len(verses)
-                
-                if selected_verse_idx < num_verses - 1:
-                    selected_verse_idx += 1
-                    
+        if k.lower() == 'q':
+            if mode == 1: mode = 0
+            else: break
         elif k == key.ENTER:
             if mode == 0:
                 mode = 1
-                selected_verse_idx = 0
+                selected_verse = 0
             else:
-                # Verse selected
-                screen3_read_bible_verse.start(book_index, selected_chapter_idx, selected_verse_idx)
+                screen3_read_bible_verse.start(book_index, selected_chapter, selected_verse)
+        else:
+            if mode == 0:
+                selected_chapter = handle_navigation(k, selected_chapter, len(chapters))
+            else:
+                selected_verse = handle_navigation(k, selected_verse, len(chapters[selected_chapter]["verses"]))
 
 if __name__ == "__main__":
-    # Test with Genesis (Index 0)
     start(0)
