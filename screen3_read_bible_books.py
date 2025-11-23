@@ -4,6 +4,7 @@ import sys
 
 from bible_data import KJV_BIBLE
 from readchar import readkey, key
+import screen3_read_bible_chapters_and_verses
 
 def get_book_names():
     return [b["book"] for b in KJV_BIBLE]
@@ -177,6 +178,27 @@ def start():
         elif k == key.RIGHT:
             selected_col = min(2, selected_col + 1)
             selected_row = min(len(columns_data[selected_col]) - 1, selected_row)
+            
+        elif k == key.ENTER:
+            # Calculate book index
+            # Col 0: 0-26 (27 items) -> index = row
+            # Col 1: 27-38 (12 items) -> index = 27 + row
+            # Col 2: 39+ (NT) -> index = 39 + row
+            
+            # We need to account for scrolling!
+            # The `selected_row` is the logical index in the column (0 to len(column)-1).
+            # So we don't need to worry about scroll_offsets here, as selected_row tracks the logical position.
+            
+            book_index = -1
+            if selected_col == 0:
+                book_index = selected_row
+            elif selected_col == 1:
+                book_index = 27 + selected_row
+            elif selected_col == 2:
+                book_index = 39 + selected_row
+                
+            if book_index >= 0 and book_index < len(books):
+                screen3_read_bible_chapters_and_verses.start(book_index)
             
         # Update Scroll Offsets
         # Check if selected_row is within visible range

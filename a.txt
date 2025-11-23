@@ -1,6 +1,49 @@
+Books:
+Genesis          Hosea      Matthew
+Exodus           Joel       Mark
+Leviticus        Amos       Luke
+Numbers          Obadiah    John
+Deuteronomy      Jonah      Acts
+Joshua           Micah      Romans
+Judges           Nahum      1 Corinthians    
+Ruth             Habakkuk   2 Corinthians    
+1 Samuel         Zephaniah  Galatians        
+2 Samuel         Haggai     Ephesians        
+1 Kings          Zechariah  Philippians      
+2 Kings          Malachi    Colossians       
+1 Chronicles                1 Thessalonians  
+2 Chronicles                2 Thessalonians  
+Ezra                        1 Timothy        
+Nehemiah                    2 Timothy        
+Esther                      Titus
+Job                         Philemon
+Psalms                      Hebrews
+Proverbs                    James
+Ecclesiastes                1 Peter
+Song of Solomon             2 Peter
+Isaiah                      1 John
+Jeremiah                    2 John
+Lamentations                3 John
+Ezekiel                     Jude
+Daniel                      Revelation       
+[Q] Back to Menu
+
+╔═══════════╗
+║Genesis _:_║
+╚═══════════╝
+Chapter:
+01  02  03  04  05  06  07  08  09  10
+11  12  13  14  15  16  17  18  19  20
+21  22  23  24  25  26  27  28  29  30
+31  32  33  34  35  36  37  38  39  40
+41  42  43  44  45  46  47  48  49  50
+
+[Q] Back to Menu
+
 ╔══════════════════════════════════════════════════════╗
 ║Genesis 1:1                                           ║
 ║King James Version                                    ║
 ║                                                      ║
 ║In the beginning God created the heaven and the earth.║
 ╚══════════════════════════════════════════════════════╝
+[Q] Back to Menu
