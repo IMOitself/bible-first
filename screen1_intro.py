@@ -4,4 +4,5 @@ print("hello world")
 print("Press any key to continue...")
 input()
 
-with open('screen2_menu.py', encoding='utf-8') as f: exec(f.read())
+import screen2_menu
+screen2_menu.start()

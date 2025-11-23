@@ -14,55 +14,52 @@ options = [
     "❌ QUIT"            # 4
 ]
 
-def open_file(index):
-    python_file = ""
+def open_screen(index):
     if index == 0:
-        python_file = "screen3_read_bible.py"
+        import screen3_read_bible
+        screen3_read_bible.start()
     elif index == 1:
-        python_file = "screen4_bookmarks.py"
+        import screen4_bookmarks
+        screen4_bookmarks.start()
     elif index == 2:
-        python_file = "screen5_find_in_bible.py"
+        import screen5_find_in_bible
+        screen5_find_in_bible.start()
     elif index == 3:
-        python_file = "screen1_intro.py"
+        import screen1_intro
+        screen1_intro.start()
     elif index == 4:
         exit()
-    
-    try:
-        with open(python_file, encoding='utf-8') as f: exec(f.read())
-    
-    except FileNotFoundError:
-        input("\ncoming soon..\nwalang file na " + python_file)
-        with open("screen_menu.py", encoding='utf-8') as f: exec(f.read())
 
 
 # =====
 # START
 # =====
 
-selected_option = 0
-while True:
-    print("\033[H\033[2J")  # Clear screen
-    print("\nBASTA TITLE NATIN\n")
-    print("[ verse of the day dito ]\n")
-    
-    i = 0
-    for option in options:
-        if selected_option == i:
-            print(f"o {option}")
-        else:
-            print(f"  {option}")
+def start():
+    selected_option = 0
+    while True:
+        print("\033[H\033[2J")  # Clear screen
+        print("\nBASTA TITLE NATIN\n")
+        print("[ verse of the day dito ]\n")
+        
+        i = 0
+        for option in options:
+            if selected_option == i:
+                print(f"o {option}")
+            else:
+                print(f"  {option}")
 
-        i += 1
-    
-    # navigation hehe
+            i += 1
+        
+        # navigation hehe
 
-    pressed_key = readkey()
+        pressed_key = readkey()
 
-    if pressed_key == key.DOWN:
-        selected_option = (selected_option + 1) % len(options)
+        if pressed_key == key.DOWN:
+            selected_option = (selected_option + 1) % len(options)
 
-    elif pressed_key == key.UP:
-        selected_option = (selected_option - 1) % len(options)
+        elif pressed_key == key.UP:
+            selected_option = (selected_option - 1) % len(options)
 
-    elif pressed_key == key.ENTER:
-        open_file(selected_option)
+        elif pressed_key == key.ENTER:
+            open_screen(selected_option)
