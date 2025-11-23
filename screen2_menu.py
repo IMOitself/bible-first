@@ -7,11 +7,11 @@ except ImportError:
     from readchar import readkey, key
 
 options = [
-    "📖 START READING",  # 0
-    "🔖 BOOKMARKS",      # 1
-    "🔎 FIND IN BIBLE",  # 2
-    "🔙 BACK TO TITLE",  # 3
-    "❌ QUIT"            # 4
+    "[W] START READING",  # 0
+    "[B] BOOKMARKS",      # 1
+    "[F] FIND IN BIBLE",  # 2
+    "[Q] BACK TO TITLE",  # 3
+    "[X] QUIT"            # 4
 ]
 
 def open_screen(index):
@@ -63,3 +63,14 @@ def start():
 
         elif pressed_key == key.ENTER:
             open_screen(selected_option)
+        
+        elif pressed_key.lower() == 'w':
+            open_screen(0)
+        elif pressed_key.lower() == 'b':
+            open_screen(1)
+        elif pressed_key.lower() == 'f':
+            open_screen(2)
+        elif pressed_key.lower() == 'q':
+            open_screen(3)
+        elif pressed_key.lower() == 'x':
+            open_screen(4)

@@ -1,15 +1,10 @@
 import os
 import sys
-from readchar import readkey, key
 import UI
 
+from bible_data import KJV_BIBLE
+from readchar import readkey, key
 import screen3_read_bible_verse
-
-try:
-    from bible_data import KJV_BIBLE
-except ImportError:
-    print("Dependencies missing. Please ensure bible_data.py exists.")
-    sys.exit(1)
 
 def start(book_index):
     if book_index < 0 or book_index >= len(KJV_BIBLE):

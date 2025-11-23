@@ -4,11 +4,8 @@ from readchar import readkey, key
 import UI
 import textwrap
 
-try:
-    from bible_data import KJV_BIBLE
-except ImportError:
-    print("Dependencies missing. Please ensure bible_data.py exists.")
-    sys.exit(1)
+from bible_data import KJV_BIBLE
+from readchar import readkey, key
 
 def start(book_index, chapter_index, verse_index):
     if book_index < 0 or book_index >= len(KJV_BIBLE):
