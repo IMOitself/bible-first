@@ -10,7 +10,7 @@ options = [
     "[W] START READING",  # 0
     "[B] BOOKMARKS",      # 1
     "[F] FIND IN BIBLE",  # 2
-    "[X] QUIT"            # 3
+    "[Q] QUIT"            # 3
 ]
 
 def open_screen(index):
@@ -78,5 +78,3 @@ def start():
             open_screen(2)
         elif pressed_key.lower() == 'q':
             open_screen(3)
-        elif pressed_key.lower() == 'x':
-            open_screen(4)
