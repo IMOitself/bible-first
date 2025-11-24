@@ -165,7 +165,7 @@ def start():
         print("\033[H\033[2J")  # Clear screen
         
         # Header
-        UI.print_box(f'Results for "{word}"')
+        UI.print_box(f'{len(match_results)} Results for "{word}"')
         
         print(f"Linear Search: {linear_time:.6f} seconds.")
         print(f"Binary Search: {binary_time:.6f} seconds.")
@@ -244,14 +244,6 @@ def start():
                 
         if has_bottom_dots:
             print("...")
-            
-        # Fill empty lines if list is short
-        rows_printed = len(visible_matches)
-        if has_top_dots: rows_printed += 1
-        if has_bottom_dots: rows_printed += 1
-        
-        if rows_printed < list_height:
-            print("\n" * (list_height - rows_printed), end="")
 
         print("\n[Q] Back to Menu")
         
