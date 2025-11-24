@@ -10,8 +10,7 @@ options = [
     "[W] START READING",  # 0
     "[B] BOOKMARKS",      # 1
     "[F] FIND IN BIBLE",  # 2
-    "[Q] BACK TO TITLE",  # 3
-    "[X] QUIT"            # 4
+    "[X] QUIT"            # 3
 ]
 
 def open_screen(index):
@@ -25,11 +24,18 @@ def open_screen(index):
         import screen5_find_in_bible
         screen5_find_in_bible.start()
     elif index == 3:
-        import screen1_intro
-        screen1_intro.start()
-    elif index == 4:
         exit()
 
+def verse_of_the_day():
+    import screen3_read_bible_verse
+    from bible_data import KJV_BIBLE
+    
+    print("Verse of the Day")
+    
+    # 1 Timothy 3:15
+    # 53th book, Chapter 3 (2), Verse 15 (14)
+    box = screen3_read_bible_verse.get_verse_box(53, 2, 14)
+    print(box)
 
 # =====
 # START
@@ -40,14 +46,14 @@ def start():
     while True:
         print("\033[H\033[2J")  # Clear screen
         print("\nBASTA TITLE NATIN\n")
-        print("[ verse of the day dito ]\n")
+        verse_of_the_day()
         
         i = 0
         for option in options:
             if selected_option == i:
-                print(f"o {option}")
+                print(f"\033[93m{option}\033[0m")
             else:
-                print(f"  {option}")
+                print(f"{option}")
 
             i += 1
         

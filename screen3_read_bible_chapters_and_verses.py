@@ -13,7 +13,7 @@ def print_grid(num_items, selected_idx):
             if idx < num_items:
                 item_str = f"{idx + 1:02}"
                 if idx == selected_idx:
-                    item_str = f"\033[91m{item_str}\033[0m"
+                    item_str = f"\033[93m{item_str}\033[0m"
                 line_parts.append(item_str)
             else:
                 line_parts.append("  ")

@@ -100,7 +100,7 @@ def print_columns(books, rows_available, is_tall_screen, selected_col, selected_
                     actual_index = start_idx + slice_index
                     
                     if col_idx == selected_col and actual_index == selected_row:
-                        item_text = f"\033[91m{item_text}\033[0m"
+                        item_text = f"\033[93m{item_text}\033[0m"
             else:
                 item_text = "".ljust(width)
             
