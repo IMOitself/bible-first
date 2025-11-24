@@ -47,3 +47,20 @@ Chapter:
 ║In the beginning God created the heaven and the earth.║
 ╚══════════════════════════════════════════════════════╝
 [<-] Before [->] After [Q] Back
+
+
+╔═══════════════════╗
+║Results for "apple"║
+╚═══════════════════╝
+Linear Search: 40 matches found in 0.027402 seconds.
+Binary Search: 40 matches found in 0.054068 seconds.
+Indexed Search Build: 0.776639 seconds.
+Indexed Search: 40 matches found in 0.001370 seconds.
+
+First 3 matches:
+Deuteronomy 32:10 - He found him in a desert land, and in the waste howling wilderness; he led him about, he instructed him, he kept him as the apple of his eye.
+Psalms 17:8 - Keep me as the apple of the eye, hide me under the shadow of thy wings,
+Proverbs 7:2 - Keep my commandments, and live; and my law as the apple of thine eye.
+...
+
+[Q] Back to Menu

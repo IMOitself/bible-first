@@ -48,7 +48,7 @@ def start(book_index):
     mode = 0 # 0: Chapter, 1: Verse
 
     while True:
-        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\033[H\033[2J")  # Clear screen
         
         if mode == 0:
             UI.print_box(f"{book_name} _:_")

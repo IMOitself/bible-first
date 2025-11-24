@@ -110,14 +110,14 @@ def print_columns(books, rows_available, is_tall_screen, selected_col, selected_
     return columns, visible_ranges
 
 def start():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    print("\033[H\033[2J")  # Clear screen
     
     selected_col = 0
     selected_row = 0
     scroll_offsets = [0, 0, 0]
     
     while True:
-        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\033[H\033[2J")  # Clear screen
         
         _, rows = shutil.get_terminal_size()
         

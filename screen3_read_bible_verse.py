@@ -11,7 +11,7 @@ def start(book_index, chapter_index, verse_index):
         return
 
     while True:
-        os.system('cls' if os.name == 'nt' else 'clear')
+        print("\033[H\033[2J")  # Clear screen
         
         book_data = KJV_BIBLE[book_index]
         book_name = book_data["book"]
