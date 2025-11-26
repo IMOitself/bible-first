@@ -1,15 +1,7 @@
 import random
 import UI
 from recommended_verses import verses
-
-# install readchar once for all files if not installed
-try:
-    from readchar import readkey, key
-except ImportError:
-    import os
-    print("\nwait lang pu...")
-    os.system("pip install readchar")
-    from readchar import readkey, key
+from readchar import readkey, key
 
 # global variable to store the verse of the day
 verse_of_the_day_verse = None
