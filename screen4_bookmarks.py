@@ -5,6 +5,9 @@ import UI
 import screen3_read_bible_verse
 from bible_data import KJV_BIBLE
 
+import random
+from recommended_verses import verses as recommended_verses_data
+
 # file to store bookmarks
 BOOKMARKS_FILE = "bookmarks.json"
 
@@ -23,38 +26,60 @@ def save_bookmarks(bookmarks):
 
 def start():
     bookmarks = load_bookmarks()
+    
+    # Randomly select 5 recommended verses
+    recommended_selection = random.sample(recommended_verses_data, min(5, len(recommended_verses_data)))
+    
     selected_index = 0
 
     while True:
         print("\033[H\033[2J")  # Clear screen
 
-        # handle empty bookmarks
-        if not bookmarks:
-            print("\nBOOKMARKS\n")
-            print("No bookmarks yet. press ENTER to start reading.")
-            print("\n[Q] Back to Menu")
-            k = readkey()
-            if k.lower() == 'q':
-                break
-            elif k == key.ENTER:
-                import screen3_read_bible_books
-                screen3_read_bible_books.start()
-            continue
-            
+        total_items = len(bookmarks) + len(recommended_selection)
+        
         # ensure selected index is valid
-        if selected_index >= len(bookmarks):
-            selected_index = len(bookmarks) - 1
+        if selected_index >= total_items:
+            selected_index = total_items - 1
         if selected_index < 0:
             selected_index = 0
 
-        # display the selected bookmark's verse
-        current_bm = bookmarks[selected_index]
+        # Determine which verse to display in the box
+        if selected_index < len(bookmarks):
+            current_bm = bookmarks[selected_index]
+        else:
+            current_bm = recommended_selection[selected_index - len(bookmarks)]
+            
         UI.print_box(screen3_read_bible_verse.get_verse_box(current_bm[0], current_bm[1], current_bm[2]))
 
-        print("\nBOOKMARKS\n")
+        print("\nBOOKMARKS:")
         
-        # list all bookmarks
-        for i, bm in enumerate(bookmarks):
+        if not bookmarks:
+            print("No bookmarks yet.")
+        else:
+            # list all bookmarks
+            for i, bm in enumerate(bookmarks):
+                book_idx, chap_idx, verse_idx = bm
+                
+                try:
+                    book_name = KJV_BIBLE[book_idx]["book"]
+                    display_chap = chap_idx + 1
+                    display_verse = verse_idx + 1
+                    
+                    line = f"{book_name} {display_chap}:{display_verse}"
+                except:
+                    line = "Invalid Bookmark"
+
+                # highlight selected bookmark
+                if i == selected_index:
+                    print(f"\033[93m\033[7m{line}\033[0m")
+                else:
+                    print(f"{line}")
+
+        print("\nRECOMMENDED VERSES:")
+        
+        # list recommended verses
+        for i, bm in enumerate(recommended_selection):
+            global_index = len(bookmarks) + i
             book_idx, chap_idx, verse_idx = bm
             
             try:
@@ -64,10 +89,10 @@ def start():
                 
                 line = f"{book_name} {display_chap}:{display_verse}"
             except:
-                line = "Invalid Bookmark"
+                line = "Invalid Verse"
 
-            # highlight selected bookmark
-            if i == selected_index:
+            # highlight selected recommended verse
+            if global_index == selected_index:
                 print(f"\033[93m\033[7m{line}\033[0m")
             else:
                 print(f"{line}")
@@ -81,19 +106,21 @@ def start():
             if selected_index > 0:
                 selected_index -= 1
         elif k == key.DOWN:
-            if selected_index < len(bookmarks) - 1:
+            if selected_index < total_items - 1:
                 selected_index += 1
         
-        # open selected bookmark
+        # open selected verse
         elif k == key.ENTER:
             screen3_read_bible_verse.start(current_bm[0], current_bm[1], current_bm[2])
             
-        # delete bookmark
+        # delete bookmark (only if a bookmark is selected)
         elif k.lower() == 'd':
-            bookmarks.pop(selected_index)
-            save_bookmarks(bookmarks)
-            if selected_index >= len(bookmarks) and selected_index > 0:
-                selected_index -= 1
+            if selected_index < len(bookmarks):
+                bookmarks.pop(selected_index)
+                save_bookmarks(bookmarks)
+                # Adjust selection if needed
+                if selected_index >= len(bookmarks) + len(recommended_selection):
+                     selected_index -= 1
                 
         # back to menu
         elif k.lower() == 'q':
