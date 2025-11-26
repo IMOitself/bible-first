@@ -43,7 +43,8 @@ def get_verse_box(book_index, chapter_index, verse_index):
     display_text = ""
     if is_bookmarked:
         display_text += "● "
-    display_text += f"{book_name} {chapter_num}:{verse_num}" + f" {book_index}:{chapter_index}:{verse_index}\n"
+    display_text += f"{book_name} {chapter_num}:{verse_num}\n"
+    # display_text += f"{book_index}:{chapter_index}:{verse_index}\n" # debug hehe
     display_text += "King James Version\n\n"
     display_text += wrapped_text
     
