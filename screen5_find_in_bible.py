@@ -131,7 +131,7 @@ def start():
     
     # Linear Search
     start_time = time.time()
-    results_linear = search(word)
+    results = search(word)
     end_time = time.time()
     linear_time = end_time - start_time
     
@@ -155,8 +155,8 @@ def start():
     end_time = time.time()
     indexed_time = end_time - start_time
 
-    # Use results_indexed for display
-    match_results = results_indexed
+    # Use linear search for display
+    match_results = results
     
     selected_row = 0
     scroll_offset = 0
