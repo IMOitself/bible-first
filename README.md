@@ -121,9 +121,9 @@ Ensure you have Python installed on your system.
 
 </summary>
 
-Santos, Jay R - screen 3 (read bible)
-Buen, Louise - screen 4 (bookmarks)
-Calimlim, Jarelle - screen 5 (find in bible)
-Bautista, Russell Jonn - screen 1 & 2, refactoring
-Bautista, Anthony Daniel - documentation, resources for verses
+- Santos, Jay R - screen 3 (read bible)
+- Buen, Louise - screen 4 (bookmarks)
+- Calimlim, Jarelle - screen 5 (find in bible)
+- Bautista, Russell Jonn - screen 1 & 2, refactoring
+- Bautista, Anthony Daniel - documentation, resources for verses
 </details>
