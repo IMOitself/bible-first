@@ -69,7 +69,7 @@ def start(book_index):
             current_chapter_data = chapters[selected_chapter_index]
             print_number_grid(len(current_chapter_data["verses"]), selected_verse_index)
             
-        print("\n[Q] Back")
+        print("[ENTER] Select  [Q] Back")
         key_pressed = readkey()
         
         if key_pressed.lower() == 'q':

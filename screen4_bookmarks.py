@@ -42,7 +42,7 @@ def start():
             selected_index = 0
 
         current_bm = bookmarks[selected_index]
-        screen3_read_bible_verse.print_verse_box(current_bm[0], current_bm[1], current_bm[2])
+        UI.print_box(screen3_read_bible_verse.get_verse_box(current_bm[0], current_bm[1], current_bm[2]))
 
         print("\nBOOKMARKS\n")
         

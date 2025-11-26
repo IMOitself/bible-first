@@ -155,7 +155,7 @@ def start():
             scroll_offsets
         )
         
-        print("[Q] Back to Menu")
+        print("\n[ENTER] Select [Q] Back to Menu")
         
         # handle user input
         key_pressed = readkey()

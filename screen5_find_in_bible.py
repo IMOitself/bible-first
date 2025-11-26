@@ -111,7 +111,7 @@ def start():
         if has_bottom_dots:
             print("...")
 
-        print("[Q] Back to Menu")
+        print("[ENTER] Read [Q] Back to Menu")
         
         k = readkey()
         if k.lower() == 'q':
