@@ -3,7 +3,7 @@ import time
 import UI
 from readchar import readkey, key
 import shutil
-
+import re
 import screen3_read_bible_verse
 
 def search(query):
@@ -17,8 +17,11 @@ def search(query):
             for verse_data in chapter_data['verses']:
                 verse_num = int(verse_data['verse'])
                 verse_text = verse_data['text']
+
+                pattern = r'\b' + re.escape(query_lower) + r'(?:s|es)?\b'
+                regex = re.compile(pattern, re.IGNORECASE)
                 
-                if query_lower in verse_text.lower():
+                if regex.search(verse_text):
                     results.append({
                         'book': book_name,
                         'chapter': chapter_num,
@@ -60,7 +63,7 @@ def start():
         if selected_row < scroll_offset:
             scroll_offset = selected_row
         elif selected_row >= scroll_offset + safe_capacity:
-            scroll_offset = selected_row - safe_capacity + 1
+           croll_offset = selected_row - safe_capacity + 1
              
         # Determine visible range
         has_top_dots = scroll_offset > 0
@@ -111,7 +114,7 @@ def start():
         if has_bottom_dots:
             print("...")
 
-        print("[ENTER] Read [Q] Back to Menu")
+        print("[UP/DOWN] Navigate [ENTER] Read [Q] Back to Menu")
         
         k = readkey()
         if k.lower() == 'q':
