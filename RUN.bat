@@ -1,0 +1,3 @@
+@echo off
+echo Running the Bible App...
+python screen1_intro.py

@@ -10,17 +10,22 @@ def search(query):
     results = []
     query_lower = query.lower()
     
+    # iterate through all books
     for book_data in KJV_BIBLE:
         book_name = book_data['book']
+        # iterate through all chapters
         for chapter_data in book_data['chapters']:
             chapter_num = int(chapter_data['chapter'])
+            # iterate through all verses
             for verse_data in chapter_data['verses']:
                 verse_num = int(verse_data['verse'])
                 verse_text = verse_data['text']
 
+                # create regex pattern for whole word search
                 pattern = r'\b' + re.escape(query_lower) + r'(?:s|es)?\b'
                 regex = re.compile(pattern, re.IGNORECASE)
                 
+                # check if verse matches query
                 if regex.search(verse_text):
                     results.append({
                         'book': book_name,
@@ -36,6 +41,7 @@ def start():
     word = input("enter word to search: ")
     print(f"\nSearching for '{word}'...")
     
+    # measure search time
     start_time = time.time()
     match_results = search(word)
     end_time = time.time()
@@ -60,6 +66,7 @@ def start():
         
         safe_capacity = max(1, list_height - 2)
         
+        # handle scrolling
         if selected_row < scroll_offset:
             scroll_offset = selected_row
         elif selected_row >= scroll_offset + safe_capacity:
@@ -83,6 +90,7 @@ def start():
         start_idx = scroll_offset
         end_idx = min(len(match_results), scroll_offset + capacity)
         
+        # slice results for display
         visible_matches = match_results[start_idx : end_idx]
         
         if has_top_dots:
@@ -95,6 +103,7 @@ def start():
             prefix = f"{match['book']} {match['chapter']}:{match['verse']}"
             content = f" - {match['text']}"
             
+            # highlight selected row
             if actual_index == selected_row:
                 full_line = f"{prefix}{content}"
                 if len(full_line) > cols:
