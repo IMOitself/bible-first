@@ -1,6 +1,6 @@
 print("\033[H\033[2J")  # Clear screen
-print("\nBASTA WELCOME\n")
-print("hello world")
+import UI
+UI.print_title()
 print("Press any key to continue...")
 input()
 

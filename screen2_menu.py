@@ -68,7 +68,9 @@ def start():
     # main loop
     while True:
         print("\033[H\033[2J")  # Clear screen
-        print("\nBASTA TITLE NATIN\n")
+        UI.print_title()
+
+        print("\n")
         # display the verse of the day
         verse_of_the_day()
         

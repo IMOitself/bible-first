@@ -12,3 +12,10 @@ def print_box(text):
         remaining_space = max_line_length - len(line)
         print("║" + " " + line + (" " * remaining_space) + " " + "║")
     print("╚" + horizontal_line + "╝")
+
+def print_title():
+    print("▀██▀▀█▄    ██  ▀██      ▀██             ▀██▀▀▀▀█  ██                   ▄   ")
+    print(" ██   ██  ▄▄▄   ██ ▄▄▄   ██    ▄▄▄▄      ██  ▄   ▄▄▄  ▄▄▄ ▄▄   ▄▄▄▄  ▄██▄  ")
+    print(" ██▀▀▀█▄   ██   ██▀  ██  ██  ▄█▄▄▄██     ██▀▀█    ██   ██▀ ▀▀ ██▄ ▀   ██   ")
+    print(" ██    ██  ██   ██    █  ██  ██          ██       ██   ██     ▄ ▀█▄▄  ██   ")
+    print("▄██▄▄▄█▀  ▄██▄  ▀█▄▄▄▀  ▄██▄  ▀█▄▄▄▀    ▄██▄     ▄██▄ ▄██▄    █▀▄▄█▀  ▀█▄▀ ")
