@@ -78,7 +78,7 @@ def start():
             # highlight the selected option
             if selected_option == i:
                 # print in yellow
-                print(f"\033[93m{option}\033[0m")
+                print(f"\033[93m\033[7m{option}\033[0m")
             else:
                 print(f"{option}")
 

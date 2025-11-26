@@ -111,7 +111,7 @@ def print_3_columns(books, available_rows, is_tall_screen, selected_column_index
                     
                     if col_index == selected_column_index and actual_data_index == selected_row_index:
                         # highlight selected item in yellow
-                        padded_text = f"\033[93m{padded_text}\033[0m"
+                        padded_text = f"\033[93m\033[7m{padded_text}\033[0m"
             else:
                 # empty space if this column has fewer rows
                 padded_text = "".ljust(width)

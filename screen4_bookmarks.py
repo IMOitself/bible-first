@@ -68,7 +68,7 @@ def start():
 
             # highlight selected bookmark
             if i == selected_index:
-                print(f"\033[93m{line}\033[0m")
+                print(f"\033[93m\033[7m{line}\033[0m")
             else:
                 print(f"{line}")
 

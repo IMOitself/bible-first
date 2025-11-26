@@ -18,7 +18,7 @@ def print_number_grid(item_count, current_selection_index):
                 item_str = f"{current_index + 1:02}"
                 # highlight selected item
                 if current_index == current_selection_index:
-                    item_str = f"\033[93m{item_str}\033[0m"
+                    item_str = f"\033[93m\033[7m{item_str}\033[0m"
                 line_parts.append(item_str)
             else:
                 # empty space for padding

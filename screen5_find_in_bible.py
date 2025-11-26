@@ -70,7 +70,7 @@ def start():
         if selected_row < scroll_offset:
             scroll_offset = selected_row
         elif selected_row >= scroll_offset + safe_capacity:
-           croll_offset = selected_row - safe_capacity + 1
+            scroll_offset = selected_row - safe_capacity + 1
              
         # Determine visible range
         has_top_dots = scroll_offset > 0
@@ -113,7 +113,7 @@ def start():
                     else:
                         content = "" 
                 
-                print(f"\033[93m{prefix}\033[0m{content}")
+                print(f"\033[93m\033[7m{prefix}\033[0m{content}")
             else:
                 full_line = f"{prefix}{content}"
                 if len(full_line) > cols:
