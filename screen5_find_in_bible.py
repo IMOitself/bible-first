@@ -27,136 +27,16 @@ def search(query):
                     })
     return results
 
-class BinarySearch:
-    def recursive_search_verses(self, verses, book_name, chapter_num, query):
-        if not verses:
-            return []
-            
-        if len(verses) == 1:
-            verse = verses[0]
-            if query in verse['text'].lower():
-                return [{
-                    'book': book_name,
-                    'chapter': chapter_num,
-                    'verse': int(verse['verse']),
-                    'text': verse['text']
-                }]
-            return []
-            
-        mid = len(verses) // 2
-        left = self.recursive_search_verses(verses[:mid], book_name, chapter_num, query)
-        right = self.recursive_search_verses(verses[mid:], book_name, chapter_num, query)
-        return left + right
-
-    def recursive_search_chapters(self, chapters, book_name, query):
-        if not chapters:
-            return []
-        
-        if len(chapters) == 1:
-            return self.recursive_search_verses(chapters[0]['verses'], book_name, int(chapters[0]['chapter']), query)
-            
-        mid = len(chapters) // 2
-        left = self.recursive_search_chapters(chapters[:mid], book_name, query)
-        right = self.recursive_search_chapters(chapters[mid:], book_name, query)
-        return left + right
-
-    def search(self, query):
-        results = []
-        query_lower = query.lower()
-        
-        for book_data in KJV_BIBLE:
-            # Loop through each book, then divide and conquer chapters
-            book_results = self.recursive_search_chapters(book_data['chapters'], book_data['book'], query_lower)
-            results.extend(book_results)
-            
-        return results
-
-class IndexedSearch:
-    def __init__(self):
-        self.index = {}
-        self.is_built = False
-    
-    def build_index(self):
-        if self.is_built: return
-        t0 = time.time()
-        for book_data in KJV_BIBLE:
-            book_name = book_data['book']
-            for chapter_data in book_data['chapters']:
-                c_num = int(chapter_data['chapter'])
-                for verse_data in chapter_data['verses']:
-                    v_num = int(verse_data['verse'])
-                    text = verse_data['text']
-                    
-                    # Tokenize and index words
-                    words = set(text.lower().split())
-                    for w in words:
-                        w_clean = w.strip('.,;:!?"()[]{}')
-                        if not w_clean: continue
-                        
-                        if w_clean not in self.index:
-                            self.index[w_clean] = []
-                        
-                        self.index[w_clean].append({
-                            'book': book_name,
-                            'chapter': c_num,
-                            'verse': v_num,
-                            'text': text
-                        })
-        self.is_built = True
-
-    def search(self, query):
-        if not self.is_built:
-            self.build_index()
-        
-        query = query.lower().strip()
-        results = []
-        
-        # Find all words in index that contain query (substring search support)
-        matching_words = [w for w in self.index.keys() if query in w]
-        
-        seen_verses = set()
-        for w in matching_words:
-            for verse in self.index[w]:
-                v_key = (verse['book'], verse['chapter'], verse['verse'])
-                if v_key not in seen_verses:
-                    seen_verses.add(v_key)
-                    results.append(verse)
-                    
-        return results
 
 def start():
     print("\033[H\033[2J")  # Clear screen
     word = input("enter word to search: ")
     print(f"\nSearching for '{word}'...")
     
-    # Linear Search
     start_time = time.time()
-    results = search(word)
+    match_results = search(word)
     end_time = time.time()
     linear_time = end_time - start_time
-    
-    # Binary Search
-    binary_searcher = BinarySearch()
-    start_time = time.time()
-    results_binary = binary_searcher.search(word)
-    end_time = time.time()
-    binary_time = end_time - start_time
-    
-    # Indexed Search
-    indexed_searcher = IndexedSearch()
-    # Build first to separate build time
-    start_time = time.time()
-    indexed_searcher.build_index()
-    end_time = time.time()
-    build_time = end_time - start_time
-    
-    start_time = time.time()
-    results_indexed = indexed_searcher.search(word)
-    end_time = time.time()
-    indexed_time = end_time - start_time
-
-    # Use linear search for display
-    match_results = results
     
     selected_row = 0
     scroll_offset = 0
@@ -167,31 +47,20 @@ def start():
         # Header
         UI.print_box(f'{len(match_results)} Results for "{word}"')
         
-        print(f"Linear Search: {linear_time:.6f} seconds.")
-        print(f"Binary Search: {binary_time:.6f} seconds.")
-        print(f"Indexed Search Build: {build_time:.6f} seconds.")
-        print(f"Indexed Search: {indexed_time:.6f} seconds.")
+        print(f"found in {linear_time:.6f} seconds.")
         print("-" * 40)
 
         # Calculate available space
-        # Header takes roughly:
-        # Box: 3 lines
-        # Timings: 4 lines
-        # Separator: 1 line
-        # Footer ([Q] Back): 2 lines (newline + text)
-        # Total reserved: ~10 lines.
-        
         cols, rows = shutil.get_terminal_size()
         reserved_lines = 11
         list_height = max(1, rows - reserved_lines)
         
-        # Adjust scroll offset to keep selected_row in view
         safe_capacity = max(1, list_height - 2)
         
         if selected_row < scroll_offset:
             scroll_offset = selected_row
         elif selected_row >= scroll_offset + safe_capacity:
-             scroll_offset = selected_row - safe_capacity + 1
+            scroll_offset = selected_row - safe_capacity + 1
              
         # Determine visible range
         has_top_dots = scroll_offset > 0
@@ -224,9 +93,6 @@ def start():
             content = f" - {match['text']}"
             
             if actual_index == selected_row:
-                # Highlight prefix
-                # Truncate content if needed to fit one line
-                
                 full_line = f"{prefix}{content}"
                 if len(full_line) > cols:
                     available_for_content = cols - len(prefix) - 4 # ... and margin
