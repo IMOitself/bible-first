@@ -7,7 +7,10 @@ except ImportError:
     from readchar import readkey, key
 
 import random
+import UI
 from recommended_verses import verses
+
+verse_of_the_day_verse = None
 
 options = [
     "[W] START READING",  # 0
@@ -35,8 +38,12 @@ def verse_of_the_day():
     
     print("Verse of the Day")
 
+    global verse_of_the_day_verse
     random_verse = random.choice(verses)
-    screen3_read_bible_verse.print_verse_box(random_verse[0], random_verse[1], random_verse[2])
+    if verse_of_the_day_verse == None:
+        verse_of_the_day_verse = screen3_read_bible_verse.get_verse_box(random_verse[0], random_verse[1], random_verse[2])
+    
+    UI.print_box(verse_of_the_day_verse)
 
 # =====
 # START

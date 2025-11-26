@@ -29,11 +29,14 @@ def start():
 
         if not bookmarks:
             print("\nBOOKMARKS\n")
-            print("No bookmarks yet. Add one from the Read Bible screen (press 'b').")
+            print("No bookmarks yet. press ENTER to start reading.")
             print("\n[Q] Back to Menu")
             k = readkey()
             if k.lower() == 'q':
                 break
+            elif k == key.ENTER:
+                import screen3_read_bible_books
+                screen3_read_bible_books.start()
             continue
 
         # Ensure selected index is valid

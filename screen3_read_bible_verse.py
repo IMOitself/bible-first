@@ -6,7 +6,7 @@ import textwrap
 from bible_data import KJV_BIBLE
 
 
-def print_verse_box(book_index, chapter_index, verse_index):
+def get_verse_box(book_index, chapter_index, verse_index):
     if book_index < 0 or book_index >= len(KJV_BIBLE):
         return ""
         
@@ -35,7 +35,7 @@ def print_verse_box(book_index, chapter_index, verse_index):
     display_text += "King James Version\n\n"
     display_text += wrapped_text
     
-    UI.print_box(display_text)
+    return display_text
 
 def start(book_index, chapter_index, verse_index):
     if book_index < 0 or book_index >= len(KJV_BIBLE):
@@ -44,7 +44,7 @@ def start(book_index, chapter_index, verse_index):
     while True:
         print("\033[H\033[2J")  # Clear screen
         
-        print_verse_box(book_index, chapter_index, verse_index)
+        UI.print_box(get_verse_box(book_index, chapter_index, verse_index))
         
         print("[<-] Before [->] After [Q] Back")
         
