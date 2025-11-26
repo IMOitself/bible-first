@@ -1,6 +1,6 @@
 <div align="center">
 
-# Bible App
+# Bible First
 
 A simple, terminal-based Bible reader application written in Python.
 
