@@ -6,6 +6,9 @@ except ImportError:
     os.system("pip install readchar")
     from readchar import readkey, key
 
+import random
+from recommended_verses import verses
+
 options = [
     "[W] START READING",  # 0
     "[B] BOOKMARKS",      # 1
@@ -31,11 +34,9 @@ def verse_of_the_day():
     from bible_data import KJV_BIBLE
     
     print("Verse of the Day")
-    
-    # 1 Timothy 3:15
-    # 53th book, Chapter 3 (2), Verse 15 (14)
-    box = screen3_read_bible_verse.get_verse_box(53, 2, 14)
-    print(box)
+
+    random_verse = random.choice(verses)
+    screen3_read_bible_verse.print_verse_box(random_verse[0], random_verse[1], random_verse[2])
 
 # =====
 # START
